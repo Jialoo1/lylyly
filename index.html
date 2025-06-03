@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人兴趣展示网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4ade80;
+            --warning: #f72585;
+            --text: #333;
+            --text-light: #666;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #f5f7ff;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        
+        body.dark-mode {
+            background-color: #121212;
+            color: #f0f0f0;
+            --text: #f0f0f0;
+            --text-light: #bbb;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 主内容区域 */
+        main {
+            margin-top: 80px;
+            padding: 40px 0;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.8), rgba(58, 12, 163, 0.8)), url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 50px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: transparent;
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* 兴趣区域 */
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--secondary);
+            position: relative;
+            font-size: 2.2rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .interests {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .interest-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .interest-card {
+            background: #1e1e1e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .interest-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        
+        .card-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .interest-card:hover .card-img img {
+            transform: scale(1.1);
+        }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .card-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .card-content p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        /* 多媒体元素 */
+        .media-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+        }
+        
+        .dark-mode .media-section {
+            background: #1e1e1e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .media-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .video-container {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+        
+        .media-content {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .media-content h3 {
+            color: var(--secondary);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .media-content p {
+            margin-bottom: 20px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        
+        /* 滚动字幕 */
+        .marquee {
+            background: var(--primary);
+            color: white;
+            padding: 15px 0;
+            margin: 30px 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .marquee-content {
+            display: flex;
+            animation: marquee 20s linear infinite;
+        }
+        
+        .marquee-item {
+            padding: 0 40px;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        
+        .marquee-item i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        /* 作者信息 */
+        .author-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+        }
+        
+        .dark-mode .author-info {
+            background: #1e1e1e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .author-avatar {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .avatar-container {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .avatar-container i {
+            font-size: 120px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .author-details {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .author-details h2 {
+            color: var(--secondary);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            background: #f0f5ff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .dark-mode .info-item {
+            background: #2a2a2a;
+        }
+        
+        .info-item h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .info-item p {
+            color: var(--text-light);
+        }
+        
+        /* 摄影作品展示 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .photo-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode .photo-card {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .photo-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .photo-info {
+            padding: 15px;
+            background: white;
+        }
+        
+        .dark-mode .photo-info {
+            background: #1e1e1e;
+        }
+        
+        .photo-info h3 {
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        
+        .photo-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* 旅行日志 */
+        .travel-journal {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+        }
+        
+        .dark-mode .travel-journal {
+            background: #1e1e1e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--accent);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 10px 40px;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            padding: 20px;
+            background: #f0f5ff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dark-mode .timeline-content {
+            background: #2a2a2a;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-links a i {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* 主题切换 */
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        .animate {
+            animation: fadeIn 1s ease forwards;
+            opacity: 0;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 5px 10px;
+            }
+            
+            .hero {
+                padding: 70px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .author-info {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .media-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>作业内容<span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-page="home">首页</a></li>
+                    <li><a href="#" class="nav-link" data-page="photography">摄影艺术</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">关于作者</a></li>
+                    <li><a href="#" class="nav-link" data-page="travel">旅行日志</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主题切换按钮 -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="container">
+        <!-- 首页内容 -->
+        <div class="page active" id="home">
+            <!-- 英雄区域 -->
+            <section class="hero">
+                <h1>探索多彩的兴趣世界</h1>
+                <p>发现激情，分享热爱，创造无限可能</p>
+                <a href="#interests" class="btn">探索兴趣</a>
+            </section>
+            
+            <!-- 滚动字幕 -->
+            <div class="marquee">
+                <div class="marquee-content">
+                    <div class="marquee-item"><i class="fas fa-camera"></i>摄影是凝固时间的艺术</div>
+                    <div class="marquee-item"><i class="fas fa-globe-asia"></i>旅行让世界变得更大</div>
+                    <div class="marquee-item"><i class="fas fa-code"></i>编程是创造力的延伸</div>
+                    <div class="marquee-item"><i class="fas fa-book"></i>阅读是与智者的对话</div>
+                    <div class="marquee-item"><i class="fas fa-music"></i>音乐是灵魂的语言</div>
+                </div>
+            </div>
+            
+            <!-- 兴趣展示区 -->
+            <section id="interests">
+                <h2 class="section-title">我的兴趣爱好</h2>
+                <div class="interests">
+                    <div class="interest-card animate">
+                        <div class="card-img">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="登山">
+                        </div>
+                        <div class="card-content">
+                            <h3>登山与户外</h3>
+                            <p>登山让我感受自然的壮丽与力量。从阿尔卑斯到喜马拉雅，每一次攀登都是对自我的挑战。站在山顶，俯瞰大地，所有的疲惫都化为成就感和对自然的敬畏。</p>
+                            <button class="btn" data-page="travel">查看日志</button>
+                        </div>
+                    </div>
+                    
+                    <div class="interest-card animate delay-1">
+                        <div class="card-img">
+                            <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="摄影">
+                        </div>
+                        <div class="card-content">
+                            <h3>摄影艺术</h3>
+                            <p>摄影是我观察世界的独特方式。通过镜头，我捕捉瞬间的永恒，记录光影的故事。从人像到风景，每一张照片都是我情感和视角的表达。</p>
+                            <button class="btn" data-page="photography">欣赏作品</button>
+                        </div>
+                    </div>
+                 
+                        </div>
+                        <div class="card-content">
+                            <h3></h3>
+                            <p></p>
+                                                    </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 多媒体区域 -->
+            <section class="media-section animate delay-3">
+                <div class="media-container">
+                    <div class="video-container">
+                     
+                        </video>
+                    </div>
+                    <div class="media-content">
+                        <h3>创作过程</h3>
+                                                <p>摄影不仅是按下快门那么简单，它需要技术的支持、艺术的眼光和独特的视角。在这个视频中，您将看到我如何将平凡的场景转化为充满故事感的画面。</p>
+                        <p>通过光影的运用、构图的技巧和色彩的把握，每一张照片都讲述着一个独特的故事，传递着特定的情感和氛围。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 作者信息预览 -->
+            <section class="author-preview">
+                <h2 class="section-title">关于网站作者</h2>
+                <div class="author-info">
+                    <div class="author-avatar">
+                        <div class="avatar-container">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="author-details">
+                        <h2>王洪伟</h2>
+                        <p>热爱摄影和户外旅行，艺术温暖人心。</p>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <h4>学院信息</h4>
+                                <p>合肥信息职业技术学院 | 2024级2班</p>
+                            </div>
+                            <div class="info-item">
+                                <h4>学号</h4>
+                                <p>2022060220014
+                            </div>
+                            <div class="info-item">
+                                <h4>兴趣爱好</h4>
+                                <p>网页开发、登山摄影、旅行写作</p>
+                            </div>
+                            <div class="info-item">
+                                <h4></h4>
+                                <p></p>
+                            </div>
+                        </div>
+                        
+                        <button class="btn" data-page="about">了解更多</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- 摄影艺术页面 -->
+        <div class="page" id="photography">
+            <section class="hero" style="background-image: linear-gradient(rgba(67, 97, 238, 0.8), rgba(58, 12, 163, 0.8)), url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                <h1>摄影艺术</h1>
+                <p>捕捉光影瞬间，记录生活美好</p>
+            </section>
+            
+            <h2 class="section-title">我的摄影作品</h2>
+            
+            <div class="gallery">
+                <div class="photo-card animate">
+                    <img src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="山脉">
+                    <div class="photo-info">
+                        <h3>晨曦山脉</h3>
+                        <p>拍摄于西藏，清晨的第一缕阳光洒在雪山上</p>
+                    </div>
+                </div>
+                
+                <div class="photo-card animate delay-1">
+                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="自然">
+                    <div class="photo-info">
+                        <h3>森林秘境</h3>
+                        <p>云南西双版纳热带雨林，捕捉到穿透树冠的阳光</p>
+                    </div>
+                </div>
+                
+                <div class="photo-card animate delay-2">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="风景">
+                    <div class="photo-info">
+                        <h3>雾中山谷</h3>
+                        <p>四川峨眉山，云雾缭绕的山谷如同仙境</p>
+                    </div>
+                </div>
+                
+                <div class="photo-card animate delay-1">
+                    <img src="https://images.unsplash.com/photo-1506260408121-e353d10b87c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="秋色">
+                    <div class="photo-info">
+                        <h3>秋日湖畔</h3>
+                        <p>新疆喀纳斯湖，金秋时节的迷人景色</p>
+                    </div>
+                </div>
+                
+                <div class="photo-card animate delay-2">
+                    <img src="https://images.unsplash.com/photo-1476820865390-c52aeebb9891?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="城市">
+                    <div class="photo-info">
+                        <h3>都市夜景</h3>
+                        <p>上海外滩，现代都市的璀璨夜景</p>
+                    </div>
+                </div>
+                
+                <div class="photo-card animate delay-3">
+                    <img src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="星空">
+                    <div class="photo-info">
+                        <h3>银河之下</h3>
+                        <p>内蒙古草原，夏夜的璀璨银河</p>
+                    </div>
+                </div>
+            </div>
+            
+            <section class="media-section">
+                <h2 class="section-title">摄影心得</h2>
+                <div class="media-container">
+                    <div class="media-content">
+                        <p>摄影对我来说不仅仅是一种爱好，更是一种生活态度。通过镜头，我学会了观察世界，发现平凡中的美好。</p>
+                        <p>我的摄影风格偏向自然风光和人文纪实，喜欢捕捉那些转瞬即逝的瞬间，记录生活中真实而感人的画面。</p>
+                        <p>在摄影过程中，我特别注重光影的运用和构图的平衡。每一张照片背后都有一个故事，都蕴含着我当时的情感和思考。</p>
+                        <p>摄影教会我耐心等待最佳的拍摄时机，也教会我欣赏不同光线条件下的美景。从黎明到黄昏，从晴天到雨天，每个时刻都有独特的魅力。</p>
+                    </div>
+                    <div class="video-container">
+                        <img src="https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="摄影器材" style="height: 100%;">
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- 关于作者页面 -->
+        <div class="page" id="about">
+            <section class="hero" style="background-image: linear-gradient(rgba(67, 97, 238, 0.8), rgba(58, 12, 163, 0.8)), url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                <h1>关于作者</h1>
+                <p>探索创造者背后的故事</p>
+            </section>
+            
+            <div class="author-info">
+                <div class="author-avatar">
+                    <div class="avatar-container">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="author-details">
+                    <h2>王洪伟</h2>
+                    <p>合肥信息职业技术学院 | 2024级2班 学号：2022060220014
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>基本信息</h4>
+                            <p>年龄：18岁</p>
+                            <p>专业：大数据技术</p>
+                            <p>邮箱：360256448@QQ.com
+                        </div>
+                        
+                        <div class="info-item">
+                            <h4></h4>
+                            <p></p>
+                            <p></p>
+                            <p></p>
+                        </div>
+                        
+                        <div class="info-item">
+                            <h4>兴趣爱好</h4>
+                            <p>摄影、、旅行、编程</p>
+                            <p>阅读、音乐、</p>
+                        </div>
+                        
+                        <div class="info-item">
+                            <h4></h4>
+                            <p></p>
+                            <p></p>
+                            <p></p>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 15px; color: var(--secondary);"></h3>
+                    <p></p>
+
+
+<p></p>
+                    <p></p>
+                </div>
+            </div>
+            
+            <section class="media-section">
+                <h2 class="section-title">项目经验</h2>
+                <div class="interests">
+                    <div class="interest-card animate">
+                        
+                        </div>
+                        <div class="card-content">
+                            <h3>校园信息平台</h3>
+                            <p>为学校开发的综合信息平台，整合课程表、成绩查询、校园新闻等功能。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="interest-card animate delay-1">
+                        <div class="card-img">
+                            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="项目">
+                        </div>
+                        <div class="card-content">
+                            <h3>摄影作品展示网站</h3>
+                            <p>个人摄影作品展示平台，包含作品分类、搜索、评论等功能。使用Vue.js和Firebase实现。</p>
+                        </div>
+                    </div>
+                    
+                                           </div>
+                        <div class="card-content">
+                            <h3>旅行路线规划APP</h3>
+                            <p>基于用户兴趣的旅行路线规划应用，整合景点信息、交通方式和住宿推荐。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- 旅行日志页面 -->
+        <div class="page" id="travel">
+            <section class="hero" style="background-image: linear-gradient(rgba(67, 97, 238, 0.8), rgba(58, 12, 163, 0.8)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')">
+                <h1>旅行日志</h1>
+                <p>记录足迹，分享见闻</p>
+            </section>
+            
+            <h2 class="section-title">我的旅行足迹</h2>
+            
+            <div class="travel-journal">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2023年7月 | 西藏</div>
+                            <h3>朝圣之旅</h3>
+                            <p>西藏之旅是一次心灵的洗礼。站在海拔5000米的珠峰大本营，感受着稀薄的空气和壮丽的景色，所有的疲惫都变得值得。</p>
+                            <p>布达拉宫的宏伟、纳木错的纯净、藏族同胞的虔诚，每一个画面都深深印在我的记忆中。这次旅行让我学会了敬畏自然，珍惜当下。</p>
+                            <div class="card-img" style="height: 200px; margin-top: 15px;">
+                                <img src="https://images.unsplash.com/photo-1545334391-3cfc9ae25ae7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="西藏">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2022年10月 | 云南</div>
+                            <h3>彩云之南</h3>
+                            <p>云南是一个充满多元文化的地方。从昆明的翠湖到丽江古城，从大理的洱海到香格里拉的普达措，每一处都有独特的魅力。</p>
+                            <p>在泸沽湖畔，我体验了摩梭人的走婚文化；在玉龙雪山，我感受到了大自然的壮丽。云南的美食也让我流连忘返，过桥米线、鲜花饼都令人难忘。</p>
+                            <div class="card-img" style="height: 200px; margin-top: 15px;">
+                                <img src="https://images.unsplash.com/photo-1547975864-9b6b8b28faf1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="云南">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2022年5月 | 四川</div>
+                            <h3>川西环线</h3>
+                            <p>川西的风景如画，四姑娘山、稻城亚丁、色达佛学院，每一处都让人震撼。在海拔4000多米的地方徒步，是对体力和意志的双重考验。</p>
+                            <p>色达的红房子在夕阳下格外壮观，稻城亚丁的牛奶海清澈见底。这次旅行让我深刻体会到"身体在地狱，眼睛在天堂"的感觉。</p>
+                            <div class="card-img" style="height: 200px; margin-top: 15px;">
+                                <img src="https://images.unsplash.com/photo-1593692909680-1e6a5174c736?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="四川">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">2021年8月 | 内蒙古</div>
+                            <h3>草原之旅</h3>
+                            <p>在呼伦贝尔大草原，我体验了真正的草原生活。骑马穿越草原，住在蒙古包里，夜晚围着篝火唱歌跳舞，这些经历都让我难以忘怀。</p>
+                            <p>草原的星空格外明亮，银河清晰可见。这次旅行让我感受到了自然的辽阔和人类的渺小，也让我学会了放慢脚步，享受生活。</p>
+                            <div class="card-img" style="height: 200px; margin-top: 15px;">
+                                <img src="https://images.unsplash.com/photo-1593692909230-2b0cd4ae6b5a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="内蒙古">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <section class="media-section">
+                <h2 class="section-title">旅行感悟</h2>
+                <div class="media-container">
+                    <div class="media-content">
+                        <p>旅行对我来说是认识世界、认识自己的过程。每一次旅行都是一次学习，让我看到不同的生活方式，理解不同的文化背景。</p>
+                        <p>在旅途中，我学会了适应变化，解决问题。无论是错过火车还是语言不通，这些挑战都让我变得更加独立和坚强。</p>
+                        <p>我也喜欢用相机记录旅途中的美好瞬间。这些照片不仅是回忆的载体，也是我观察世界的窗口。通过镜头，我能够发现平凡中的不平凡。</p>
+                        <p>未来，我计划继续探索中国的壮丽山河，也希望能够走出国门，体验更多不同的文化和风景。旅行让我明白，世界很大，人生很短，要珍惜每一次出发的机会。</p>
+                    </div>
+                    <div class="video-container">
+                        <img src="https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="旅行" style="height: 100%;">
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于本站</h3>
+                    <p>本网站仅展示作业内容</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link" data-page="home"><i class="fas fa-home"></i> 首页</a></li>
+                        <li><a href="#" class="footer-link" data-page="photography"><i class="fas fa-camera"></i> 摄影艺术</a></li>
+                        <li><a href="#" class="footer-link" data-page="about"><i class="fas fa-user"></i> 关于作者</a></li>
+                        <li><a href="#" class="footer-link" data-page="travel"><i class="fas fa-plane"></i> 旅行日志</a></li>
+                    </ul>
+                </div>
+                
+           
+            
+            <div class="copyright">
+                <p>&copy; 2025个人兴趣展示网站 | 设计与开发：王洪伟 | 所有图片来自Unsplash</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 页面导航功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link, .footer-link, .btn[data-page]');
+            const pages = document.querySelectorAll('.page');
+            
+            // 初始化页面
+            function showPage(pageId) {
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === pageId) {
+                        page.classList.add('active');
+                    }
+                });
+                
+                // 更新导航栏活动状态
+                navLinks.forEach(link => {
+                    if (link.getAttribute('data-page') === pageId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                
+                // 滚动到顶部
+                window.scrollTo(0, 0);
+            }
+            
+            // 添加导航事件
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+            
+            // 动画效果
+            const animatedElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // 主题切换功能
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                }
+            });
+        });
+    </script>
+</body>
+</html
